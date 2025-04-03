@@ -1,6 +1,6 @@
 #include "rommanager.h"
 
-byte lowrom[16384] = {};
+byte lowrom[16384] = HEXCODE;
 byte highrom[16384];
 
 // (address >= 0x8000) && (address <= 0xBFFF)

@@ -5,6 +5,7 @@
 #include "Arduino.h"
 
 #define SIZE 0
+#define HEXCODE {}
 
 #define LROM_RD_IRQ 20
 #define HROM_RD_IRQ 21

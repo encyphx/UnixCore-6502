@@ -7,9 +7,11 @@
 # Please, ensure that both vasm and jq are installed for the script to operate.
 
 if ! command -v jq > /dev/null || ! command -v vasm > /dev/null; then
-    echo "Please, ensure that both vasm and jq are installed for the script to operate." >&2
+    echo "Error: please, ensure that both vasm and jq are installed for the script to operate." >&2
     exit 1
 fi
+
+maxSIZE=16384
 
 filePrefix="UnixCore-6502"
 
@@ -26,12 +28,10 @@ if [ ! -e "$1" ] || [[ ! "$1" =~ UnixCore-6502\.s$ ]]; then
 
         echo "Error: no '$assemblyFileName' file found in the current directory." >&2
         exit 1
-
-    else
     
-        filePath="$assemblyFileName"
-
     fi
+    
+    filePath="$assemblyFileName"
 
 else
 
@@ -39,33 +39,51 @@ else
 
 fi
 
-vasm -Fbin -dotdir "$filePath" -o "$binaryFileName" && hexCode=$(hexdump -v -e '1/1 "0x%02x "' "$binaryFileName" | xargs -n 17) || exit 1
+seg8000=$(vasm -Fbin -dotdir "$filePath" -o "$binaryFileName" | awk '/seg8000/ {print $2}')
 
-echo "The 'code' array in the file '$jsonFileName' will be cleared."
-temporaryJsonData=$(jq '.code = []' ../$jsonFileName)
+if [ -n "$seg8000" ]; then
 
-for ((row = 1; row <= $(echo "$hexCode" | wc -l); row++)); do
+    hexCode=$(hexdump -v -e '1/1 "0x%02x "' "$binaryFileName" | cut -d ' ' -f1-$seg8000 | xargs -n 17)
 
-    temporaryJsonData=$(echo "$temporaryJsonData" | jq ".code[$(( $row - 1 ))] = \"$(echo "$hexCode" | sed -n "$row p")\"")
+    rm "$binaryFileName"
 
-done
+    if [ $seg8000 -le $maxSIZE ]; then
 
-authorFullName="$(git config --global user.name)"
+        echo "The 'code' array in the file '$jsonFileName' will be cleared."
+        temporaryJsonData=$(jq '.code = []' ../$jsonFileName)
 
-if [ ! -z "$authorFullName" ]; then
+        for ((row = 1; row <= $(echo "$hexCode" | wc -l); row++)); do
 
-    temporaryJsonData=$(echo "$temporaryJsonData" | jq ".author = \"$authorFullName\"")
+            temporaryJsonData=$(echo "$temporaryJsonData" | jq ".code[$(( $row - 1 ))] = \"$(echo "$hexCode" | sed -n "$row p")\"")
 
-else
+        done
 
-    echo "Error: you must set your user name for Git. Use 'git config --global user.name "Name Surname"' to configure it." >&2
+        authorFullName="$(git config --global user.name)"
+
+        if [ -n "$authorFullName" ]; then
+
+            temporaryJsonData=$(echo "$temporaryJsonData" | jq ".author = \"$authorFullName\"")
+
+        else
+
+            echo "Error: you must set your user name for Git. Use 'git config --global user.name "Name Surname"' to configure it." >&2
+            exit 1
+
+        fi
+
+        echo "$temporaryJsonData" | jq > ../$jsonFileName
+        echo "Data successfully stored in the '$jsonFileName' json file!"
+
+        exit 0
+
+    fi
+
+    echo "Error: you have exceeded the allowed size!" >&2
     exit 1
 
 fi
 
-echo "$temporaryJsonData" | jq > ../$jsonFileName 
-echo "Data successfully stored in the '$jsonFileName' json file!"
+[ -e "$binaryFileName" ] && rm "$binaryFileName"
 
-rm "$binaryFileName"
-
-exit 0
+echo "Error: no 'seg8000' field found!" >&2
+exit 1

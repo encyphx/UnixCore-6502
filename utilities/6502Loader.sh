@@ -8,7 +8,7 @@ jsonFileName="UnixCore-6502.json"
 
 if [ ! -s ../$jsonFileName ]; then
 
-    echo "Error: the $jsonFileName file is either empty or does not exist in the repository directory." >&2
+    echo "Error: the '$jsonFileName' file is either empty or does not exist in the repository directory." >&2
     exit 1
 
 fi
