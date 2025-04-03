@@ -10,9 +10,9 @@ fi
 libraryFilePath="libraries/rommanager/rommanager.h"
 jsonFileName="UnixCore-6502.json"
 maxSIZE=16384
-modifiedFile=$(git diff --name-only ../${jsonFileName})
+modifiedFile=$(git diff --name-only ../../${jsonFileName})
 
-if ! jq empty ../$jsonFileName 2> /dev/null; then
+if ! jq empty ../../$jsonFileName 2> /dev/null; then
 
     echo "Error: The JSON file '$jsonFileName' is invalid. Please check the structure and try again!" >&2
     exit 1
@@ -26,7 +26,7 @@ if [ -z "$modifiedFile" ]; then
 
 fi
 
-if invalidEntries=$(jq -r '.code[]' ../$jsonFileName | grep -Pv '^(0x[0-9a-fA-F]{2}( 0x[0-9a-fA-F]{2}){0,16})$'); then
+if invalidEntries=$(jq -r '.code[]' ../../$jsonFileName | grep -Pv '^(0x[0-9a-fA-F]{2}( 0x[0-9a-fA-F]{2}){0,16})$'); then
 
     echo "Error: invalid lines detected in '${jsonFileName}'. These lines need to be reviewed and fixed:" >&2
     echo "$invalidEntries" >&2
@@ -34,13 +34,13 @@ if invalidEntries=$(jq -r '.code[]' ../$jsonFileName | grep -Pv '^(0x[0-9a-fA-F]
 
 fi
 
-SIZE=$(jq -r '.code | join(" ")' ../$jsonFileName | wc -w)
+SIZE=$(jq -r '.code | join(" ")' ../../$jsonFileName | wc -w)
 
 if [ $SIZE -le $maxSIZE ]; then
 
-    arrayElements=$(jq -r '.code | join(" ") | split(" ") | join(", ") | "{" + . + "}"' ../$jsonFileName)
-    sed -i "s/#define HEXCODE\s\+{[^}]*}/#define HEXCODE ${arrayElements}/" ../${libraryFilePath}
-    sed -i "s/#define SIZE\s\+[0-9]\+/#define SIZE ${SIZE}/" ../${libraryFilePath}
+    arrayElements=$(jq -r '.code | join(" ") | split(" ") | join(", ") | "{" + . + "}"' ../../$jsonFileName)
+    sed -i "s/#define HEXCODE\s\+{[^}]*}/#define HEXCODE ${arrayElements}/" ../../${libraryFilePath}
+    sed -i "s/#define SIZE\s\+[0-9]\+/#define SIZE ${SIZE}/" ../../${libraryFilePath}
     echo "Done."
     exit 0
 

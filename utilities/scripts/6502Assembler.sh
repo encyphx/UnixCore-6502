@@ -50,7 +50,7 @@ if [ -n "$seg8000" ]; then
     if [ $seg8000 -le $maxSIZE ]; then
 
         echo "The 'code' array in the file '$jsonFileName' will be cleared."
-        temporaryJsonData=$(jq '.code = []' ../$jsonFileName)
+        temporaryJsonData=$(jq '.code = []' ../../$jsonFileName)
 
         for ((row = 1; row <= $(echo "$hexCode" | wc -l); row++)); do
 
@@ -71,7 +71,7 @@ if [ -n "$seg8000" ]; then
 
         fi
 
-        echo "$temporaryJsonData" | jq > ../$jsonFileName
+        echo "$temporaryJsonData" | jq > ../../$jsonFileName
         echo "Data successfully stored in the '$jsonFileName' json file!"
 
         exit 0

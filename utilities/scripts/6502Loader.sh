@@ -5,8 +5,9 @@
 # ./6502Loader.sh /tmp/UnixCore-6502.s
 
 jsonFileName="UnixCore-6502.json"
+export PATH=$PATH:../binaries
 
-if [ ! -s ../$jsonFileName ]; then
+if [ ! -s ../../$jsonFileName ]; then
 
     echo "Error: the '$jsonFileName' file is either empty or does not exist in the repository directory." >&2
     exit 1
