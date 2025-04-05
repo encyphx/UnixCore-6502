@@ -1,8 +1,10 @@
 #ifndef ZPMANAGER_H
 #define ZPMANAGER_H
 
-#include "memorymanager.h"
 #include "Arduino.h"
+
+#define ODRPORTJMask 0xFF80
+#define ODRPORTGMask 0xDFFF
 
 #define ZP_RD_IRQ 2
 #define ZP_WR_IRQ 3

@@ -6,11 +6,9 @@ byte freeram[24064];
 void FRAM_read() {
 
   unsigned int address = (unsigned int) ((GPIOJ->IDR & 0x1000) << 3) + ((GPIOG->IDR & 0x1000) << 2) + ((GPIOJ->IDR & 0x4000) >> 1) + ((GPIOJ->IDR & 0x8000) >> 3) + ((GPIOK->IDR & 0x0008) << 8) + ((GPIOK->IDR & 0x0010) << 6) + ((GPIOK->IDR & 0x0020) << 4) + ((GPIOK->IDR & 0x0040) << 2) + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
-  
-  GPIOJ->MODER = (0x00001555 | (GPIOJ->MODER & MODERPORTJMask));
-  GPIOG->MODER = (0x04000000 | (GPIOG->MODER & MODERPORTGMask));
 
-  R_memblock(address, 0x0200, freeram);
+  GPIOJ->ODR = (unsigned short) (((freeram[address - 0x0200] & 0x00FE) >> 1) | (GPIOJ->ODR & ODRPORTJMask));
+  GPIOG->ODR = (unsigned short) (((freeram[address - 0x0200] & 0x0001) << 13) | (GPIOG->ODR & ODRPORTGMask));
 
 }
 
@@ -18,11 +16,8 @@ void FRAM_read() {
 void FRAM_write() {
 
   unsigned int address = (unsigned int) ((GPIOJ->IDR & 0x1000) << 3) + ((GPIOG->IDR & 0x1000) << 2) + ((GPIOJ->IDR & 0x4000) >> 1) + ((GPIOJ->IDR & 0x8000) >> 3) + ((GPIOK->IDR & 0x0008) << 8) + ((GPIOK->IDR & 0x0010) << 6) + ((GPIOK->IDR & 0x0020) << 4) + ((GPIOK->IDR & 0x0040) << 2) + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
-  
-  GPIOJ->MODER = (0x00000000 | (GPIOJ->MODER & MODERPORTJMask));
-  GPIOG->MODER = (0x00000000 | (GPIOG->MODER & MODERPORTGMask));
 
-  W_memblock(address, 0x0200, freeram);
+  freeram[address - 0x0200] = (byte) (GPIOG->IDR & 0x0080) + ((GPIOE->IDR & 0x0030) << 1) + ((GPIOB->IDR & 0x0004) << 2) + ((GPIOI->IDR & 0x2000) >> 10) + ((GPIOI->IDR & 0x0400) >> 8) + ((GPIOK->IDR & 0x0080) >> 6) + ((GPIOI->IDR & 0x4000) >> 14);
 
 }
 

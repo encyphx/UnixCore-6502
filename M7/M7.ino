@@ -1,5 +1,6 @@
 /* PIN 22 = A15, PIN 24 = A14, PIN 26 = A13, PIN 28 = A12, PIN 30 = A11, PIN 32 = A10, PIN 34 = A9, PIN 36 = A8, PIN 38 = A7, PIN 40 = A6, PIN 42 = A5, PIN 44 = A4, PIN 46 = A3, PIN 48 = A2, PIN 50 = A1, PIN 52 = A0 */
-/* PIN 23 = D0, PIN 25 = D1, PIN 27 = D2, PIN 29 = D3, PIN 31 = D4, PIN 33 = D5, PIN 35 = D6, PIN 37 = D7 */
+/* PIN 23 = D0-RD, PIN 25 = D1-RD, PIN 27 = D2-RD, PIN 29 = D3-RD, PIN 31 = D4-RD, PIN 33 = D5-RD, PIN 35 = D6-RD, PIN 37 = D7-RD */
+/* PIN 39 = D0-WR, PIN 41 = D1-WR, PIN 43 = D2-WR, PIN 45 = D3-WR, PIN 47 = D4-WR, PIN 49 = D5-WR, PIN 51 = D6-WR, PIN 53 = D7-WR */
 /* PIN 6 = BUS0, PIN 7 = BUS1, PIN 8 = BUS2, PIN 9 = BUS3, PIN 10 = BUS4, PIN 11 = BUS5, PIN 12 = BUS6, PIN 13 = BUS7 */
 /* PIN 2 = ZP_RD_IRQ, PIN 3 = ZP_WR_IRQ, PIN 14 = STK_RD_IRQ, PIN 15 = STK_WR_IRQ, PIN 16 = FRAM_RD_IRQ, PIN 17 = FRAM_WR_IRQ, PIN 18 = BUS_IRQ, PIN 19 = KEYBD_IRQ, PIN 20 = LROM_RD_IRQ, PIN 21 = HROM_RD_IRQ */
 
@@ -17,7 +18,9 @@
 #define ResetPin 4
 
 const char ADDR_PIN[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52};
-const char DATA_PIN[] = {23, 25, 27, 29, 31, 33, 35, 37};
+
+const char DATA_PIN_RD[] = {23, 25, 27, 29, 31, 33, 35, 37};
+const char DATA_PIN_WR[] = {39, 41, 43, 45, 47, 49, 51, 53};
 
 void setup() {
 
@@ -26,7 +29,11 @@ void setup() {
   }
 
   for(int i = 0; i < DataPins; i++) {
-    pinMode(DATA_PIN[i], INPUT);
+    pinMode(DATA_PIN_RD[i], OUTPUT);
+  }
+
+  for(int i = 0; i < DataPins; i++) {
+    pinMode(DATA_PIN_WR[i], INPUT);
   }
 
   ZP_setup();

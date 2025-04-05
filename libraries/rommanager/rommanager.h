@@ -1,11 +1,13 @@
 #ifndef ROMMANAGER_H
 #define ROMMANAGER_H
 
-#include "memorymanager.h"
 #include "Arduino.h"
 
 #define SIZE 0
 #define HEXCODE {}
+
+#define ODRPORTJMask 0xFF80
+#define ODRPORTGMask 0xDFFF
 
 #define LROM_RD_IRQ 20
 #define HROM_RD_IRQ 21
