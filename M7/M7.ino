@@ -3,6 +3,7 @@
 /* PIN 39 = D0-WR, PIN 41 = D1-WR, PIN 43 = D2-WR, PIN 45 = D3-WR, PIN 47 = D4-WR, PIN 49 = D5-WR, PIN 51 = D6-WR, PIN 53 = D7-WR */
 /* PIN 6 = BUS0, PIN 7 = BUS1, PIN 8 = BUS2, PIN 9 = BUS3, PIN 10 = BUS4, PIN 11 = BUS5, PIN 12 = BUS6, PIN 13 = BUS7 */
 /* PIN 2 = ZP_RD_IRQ, PIN 3 = ZP_WR_IRQ, PIN 14 = STK_RD_IRQ, PIN 15 = STK_WR_IRQ, PIN 16 = FRAM_RD_IRQ, PIN 17 = FRAM_WR_IRQ, PIN 18 = BUS_IRQ, PIN 19 = KEYBD_IRQ, PIN 20 = LROM_RD_IRQ, PIN 21 = HROM_RD_IRQ */
+/* PIN 76 = KEYBD0, PIN 77 = KEYBD1, PIN 78 = KEYBD2, PIN 79 = KEYBD3, PIN 80 = KEYBD4, PIN 81 = KEYBD5, PIN 82 = KEYBD6, PIN 83 = KEYBD7 */
 
 #include "zpmanager.h"
 #include "stkmanager.h"
@@ -49,11 +50,7 @@ void setup() {
 
 }
 
-void loop() {
-
-  KEYBD_handle();
-
-}
+void loop() {}
 
 void reset() {
 
