@@ -7,7 +7,7 @@
 #define ODRPORTGMask 0xDFFF
 
 #define KEYBD_IRQ 19
-#define IRQB_IRQ 5
+#define IRQB_ACK 5
 
 void KEYBD_read();
 void KEYBD_setup();
