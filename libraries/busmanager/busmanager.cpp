@@ -2,13 +2,13 @@
 
 void BUS_write() {
 
-  byte data = (byte) (GPIOG->IDR & 0x0080) + ((GPIOE->IDR & 0x0030) << 1) + ((GPIOB->IDR & 0x0004) << 2) + ((GPIOI->IDR & 0x2000) >> 10) + ((GPIOI->IDR & 0x0400) >> 8) + ((GPIOK->IDR & 0x0080) >> 6) + ((GPIOI->IDR & 0x4000) >> 14);
+  byte data = (GPIOG->IDR & 0x0080) + ((GPIOE->IDR & 0x0030) << 1) + ((GPIOB->IDR & 0x0004) << 2) + ((GPIOI->IDR & 0x2000) >> 10) + ((GPIOI->IDR & 0x0400) >> 8) + ((GPIOK->IDR & 0x0080) >> 6) + ((GPIOI->IDR & 0x4000) >> 14);
   
-  GPIOD->ODR = (unsigned short) (((data & 0x01) << 13) | (GPIOD->ODR & 0xDFFF));
-  GPIOB->ODR = (unsigned short) ((((data & 0x02) << 3) | ((data & 0x04) << 6) | ((data & 0x08) << 6)) | (GPIOB->ODR & 0xFCEF));
-  GPIOK->ODR = (unsigned short) (((data & 0x10) >> 3) | (GPIOK->ODR & 0xFFFD));
-  GPIOJ->ODR = (unsigned short) ((((data & 0x20) << 5) | ((data & 0x40) << 5)) | (GPIOJ->ODR & 0xF3FF));
-  GPIOH->ODR = (unsigned short) (((data & 0x80) >> 1) | (GPIOH->ODR & 0xFFBF));
+  GPIOD->ODR = (((data & 0x01) << 13) | (GPIOD->ODR & 0xDFFF));
+  GPIOB->ODR = (((data & 0x02) << 3) | ((data & 0x0C) << 6) | (GPIOB->ODR & 0xFCEF));
+  GPIOK->ODR = (((data & 0x10) >> 3) | (GPIOK->ODR & 0xFFFD));
+  GPIOJ->ODR = (((data & 0x60) << 5) | (GPIOJ->ODR & 0xF3FF));
+  GPIOH->ODR = (((data & 0x80) >> 1) | (GPIOH->ODR & 0xFFBF));
   
 }
 

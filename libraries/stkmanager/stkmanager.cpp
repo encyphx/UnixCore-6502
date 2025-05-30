@@ -5,19 +5,19 @@ byte stack[256];
 // (address >= 0x0100) && (address <= 0x01FF)
 void STK_read() {
 
-  unsigned int address = (unsigned int) 0x0100 + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
+  uint16_t address = 0x0100 + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
 
-  GPIOJ->ODR = (unsigned short) (((stack[address - 0x0100] & 0x00FE) >> 1) | (GPIOJ->ODR & ODRPORTJMask));
-  GPIOG->ODR = (unsigned short) (((stack[address - 0x0100] & 0x0001) << 13) | (GPIOG->ODR & ODRPORTGMask));
+  GPIOJ->ODR = (((stack[address - 0x0100] & 0x00FE) >> 1) | (GPIOJ->ODR & ODRPORTJMask));
+  GPIOG->ODR = (((stack[address - 0x0100] & 0x0001) << 13) | (GPIOG->ODR & ODRPORTGMask));
 
 }
 
 // (address >= 0x0100) && (address <= 0x01FF)
 void STK_write() {
 
-  unsigned int address = (unsigned int) 0x0100 + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
+  uint16_t address = 0x0100 + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
 
-  stack[address - 0x0100] = (byte) (GPIOG->IDR & 0x0080) + ((GPIOE->IDR & 0x0030) << 1) + ((GPIOB->IDR & 0x0004) << 2) + ((GPIOI->IDR & 0x2000) >> 10) + ((GPIOI->IDR & 0x0400) >> 8) + ((GPIOK->IDR & 0x0080) >> 6) + ((GPIOI->IDR & 0x4000) >> 14);
+  stack[address - 0x0100] = (GPIOG->IDR & 0x0080) + ((GPIOE->IDR & 0x0030) << 1) + ((GPIOB->IDR & 0x0004) << 2) + ((GPIOI->IDR & 0x2000) >> 10) + ((GPIOI->IDR & 0x0400) >> 8) + ((GPIOK->IDR & 0x0080) >> 6) + ((GPIOI->IDR & 0x4000) >> 14);
 
 }
 
