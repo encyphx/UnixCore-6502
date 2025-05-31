@@ -2,7 +2,7 @@
 
 void KEYBD_read() {
 
-  byte data = ((GPIOC->IDR & 0x0010) >> 4) + ((GPIOC->IDR & 0x0020) >> 4) + ((GPIOB->IDR & 0x0001) << 2) + ((GPIOB->IDR & 0x0002) << 2) + ((GPIOC->IDR & 0x0008) << 1) + ((GPIOC->IDR & 0x0004) << 3) + ((GPIOC->IDR & 0x0001) << 6) + ((GPIOA->IDR & 0x0001) << 7)
+  byte data = ((GPIOC->IDR & 0x0010) >> 4) + ((GPIOC->IDR & 0x0020) >> 4) + ((GPIOB->IDR & 0x0001) << 2) + ((GPIOB->IDR & 0x0002) << 2) + ((GPIOC->IDR & 0x0008) << 1) + ((GPIOC->IDR & 0x0004) << 3) + ((GPIOC->IDR & 0x0001) << 6) + ((GPIOA->IDR & 0x0001) << 7);
 
   GPIOJ->ODR = (((data & 0x00FE) >> 1) | (GPIOJ->ODR & ODRPORTJMask));
   GPIOG->ODR = (((data & 0x0001) << 13) | (GPIOG->ODR & ODRPORTGMask));
