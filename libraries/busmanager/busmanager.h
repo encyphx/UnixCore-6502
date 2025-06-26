@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define BUS_IRQ 18
+#define BUS_IRQ 16
 
 void BUS_write();
 void BUS_setup();

@@ -9,8 +9,8 @@
 #define ODRPORTJMask 0xFF80
 #define ODRPORTGMask 0xDFFF
 
-#define LROM_RD_IRQ 20
-#define HROM_RD_IRQ 21
+#define LROM_RD_IRQ 18
+#define HROM_RD_IRQ 19
 
 extern byte lowrom[16384];
 extern byte highrom[16384];

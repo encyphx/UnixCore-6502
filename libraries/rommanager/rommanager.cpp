@@ -28,10 +28,8 @@ void ROM_setup() {
   pinMode(LROM_RD_IRQ, INPUT);
   pinMode(HROM_RD_IRQ, INPUT);
 
-  if ( SIZE < 16384 ) {
-
+  if (SIZE < 16384) {
     memset(&lowrom[SIZE], 0x00, sizeof(byte)*(16384-SIZE));
-
   }
   
   memset(highrom, 0x00, sizeof(byte)*16384);
