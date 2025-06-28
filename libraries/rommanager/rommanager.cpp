@@ -40,3 +40,15 @@ void ROM_setup() {
   attachInterrupt(digitalPinToInterrupt(HROM_RD_IRQ), HROM_read, RISING);
 
 }
+
+void reset() {
+
+  pinMode(RST, OUTPUT);
+
+  digitalWrite(RST, HIGH);
+  delay(1000);
+  digitalWrite(RST, LOW);
+  delay(1000);
+  digitalWrite(RST, HIGH);
+
+}

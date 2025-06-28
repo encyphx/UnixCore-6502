@@ -12,11 +12,15 @@
 #define LROM_RD_IRQ 18
 #define HROM_RD_IRQ 19
 
+#define RST 4
+
 extern byte lowrom[16384];
 extern byte highrom[16384];
 
 void LROM_read();
 void HROM_read();
 void ROM_setup();
+
+void reset();
 
 #endif

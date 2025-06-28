@@ -5,6 +5,8 @@
 /* PIN 6 = BUS0, PIN 7 = BUS1, PIN 8 = BUS2, PIN 9 = BUS3, PIN 10 = BUS4, PIN 11 = BUS5, PIN 12 = BUS6, PIN 13 = BUS7 */
 /* PIN 14 = RAM_RD_IRQ, PIN 15 = RAM_WR_IRQ, PIN 16 = BUS_IRQ, PIN 17 = KEYBD_IRQ, PIN 18 = LROM_RD_IRQ, PIN 19 = HROM_RD_IRQ */
 
+#include <RPC.h>
+
 #include "rammanager.h"
 #include "rommanager.h"
 
@@ -14,14 +16,14 @@
 #define AddressPins 16
 #define DataPins 8
 
-#define ResetPin 4
-
 const char ADDR_PIN[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52};
 
 const char DATA_PIN_RD[] = {23, 25, 27, 29, 31, 33, 35, 37};
 const char DATA_PIN_WR[] = {39, 41, 43, 45, 47, 49, 51, 53};
 
 void setup() {
+
+  RPC.begin();
 
   for(int i = 0; i < AddressPins; i++) {
     pinMode(ADDR_PIN[i], INPUT);
@@ -41,19 +43,8 @@ void setup() {
   KEYBD_setup();
   BUS_setup();
   
-  pinMode(ResetPin, OUTPUT);
   reset();
 
 }
 
 void loop() {}
-
-void reset() {
-
-  digitalWrite(ResetPin, HIGH);
-  delay(1000);
-  digitalWrite(ResetPin, LOW);
-  delay(1000);
-  digitalWrite(ResetPin, HIGH);
-
-}
