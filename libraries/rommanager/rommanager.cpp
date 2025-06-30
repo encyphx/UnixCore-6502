@@ -37,6 +37,9 @@ void ROM_setup() {
   highrom[16380] = 0x00;
   highrom[16381] = 0x80;
 
+  highrom[16382] = FFFE;
+  highrom[16383] = FFFF;
+
   attachInterrupt(digitalPinToInterrupt(LROM_RD_IRQ), LROM_read, RISING);
   attachInterrupt(digitalPinToInterrupt(HROM_RD_IRQ), HROM_read, RISING);
 

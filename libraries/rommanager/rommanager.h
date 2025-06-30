@@ -3,6 +3,9 @@
 
 #include "Arduino.h"
 
+#define FFFE 0x00
+#define FFFF 0x00
+
 #define L_SIZE 0
 #define L_HEXCODE {}
 

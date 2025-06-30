@@ -2,6 +2,8 @@
 
 romSize=32768
 
+libraryFilePath="libraries/rommanager/rommanager.h"
+
 filePrefix="UnixCore-6502"
 
 jsonFileName="$filePrefix.json"
@@ -56,7 +58,20 @@ if [ -n "$seg8000" ] && [ $seg8000 -gt 0 ] && [ $seg8000 -le $(($romSize - 6)) ]
         echo 'Error: the program must start at address $8000.' >&2
         exit 1
     
-    fi        
+    fi
+
+    if [ $segfffc -eq 4 ]; then
+
+        fffe=$(echo $hexdump | cut -d ' ' -f$((${romSize} - 1)))
+        ffff=$(echo $hexdump | cut -d ' ' -f${romSize})
+
+    fi
+
+    fffe=${fffe:-0x00}
+    ffff=${ffff:-0x00}
+
+    sed -i "s/#define FFFE\s\+0x[0-9A-Fa-f][0-9A-Fa-f]/#define FFFE ${fffe}/" ../../${libraryFilePath}
+    sed -i "s/#define FFFF\s\+0x[0-9A-Fa-f][0-9A-Fa-f]/#define FFFF ${ffff}/" ../../${libraryFilePath}
 
     echo "The 'code' array in the file '$jsonFileName' will be cleared."
 
