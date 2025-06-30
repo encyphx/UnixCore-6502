@@ -14,4 +14,11 @@ if [ ! -s ../../$jsonFileName ]; then
 
 fi
 
+# Please, ensure that both vasm and jq are installed for the script to operate.
+
+if ! command -v jq > /dev/null || ! command -v vasm > /dev/null; then
+    echo "Error: please, ensure that both vasm and jq are installed for the script to operate." >&2
+    exit 1
+fi
+
 ./6502Assembler.sh "$1" && ./6502Parser.sh || exit 1

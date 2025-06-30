@@ -3,8 +3,11 @@
 
 #include "Arduino.h"
 
-#define SIZE 0
-#define HEXCODE {}
+#define L_SIZE 0
+#define L_HEXCODE {}
+
+#define H_SIZE 0
+#define H_HEXCODE {}
 
 #define ODRPORTJMask 0xFF80
 #define ODRPORTGMask 0xDFFF

@@ -1,7 +1,7 @@
 #include "rommanager.h"
 
-byte lowrom[16384] = HEXCODE;
-byte highrom[16384];
+byte lowrom[16384] = L_HEXCODE;
+byte highrom[16384] = H_HEXCODE;
 
 // (address >= 0x8000) && (address <= 0xBFFF)
 void LROM_read() {
@@ -28,12 +28,13 @@ void ROM_setup() {
   pinMode(LROM_RD_IRQ, INPUT);
   pinMode(HROM_RD_IRQ, INPUT);
 
-  if (SIZE < 16384) {
-    memset(&lowrom[SIZE], 0x00, sizeof(byte)*(16384-SIZE));
+  if (L_SIZE < 16384) {
+    memset(&lowrom[L_SIZE], 0x00, sizeof(byte)*(16384-L_SIZE));
   }
-  
-  memset(highrom, 0x00, sizeof(byte)*16384);
 
+  memset(&highrom[H_SIZE], 0x00, sizeof(byte)*(16384-H_SIZE));
+
+  highrom[16380] = 0x00;
   highrom[16381] = 0x80;
 
   attachInterrupt(digitalPinToInterrupt(LROM_RD_IRQ), LROM_read, RISING);

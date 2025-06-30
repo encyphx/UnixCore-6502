@@ -1,15 +1,8 @@
 #!/bin/bash
 
-# Please, ensure jq is installed for the script to operate.
-
-if ! command -v jq > /dev/null; then
-    echo "Error: please, ensure jq is installed for the script to operate." >&2
-    exit 1
-fi
-
 libraryFilePath="libraries/rommanager/rommanager.h"
 jsonFileName="UnixCore-6502.json"
-maxSIZE=16384
+maxSize=16384
 modifiedFile=$(git diff --name-only ../../${jsonFileName})
 
 if ! jq empty ../../$jsonFileName 2> /dev/null; then
@@ -34,17 +27,31 @@ if invalidEntries=$(jq -r '.code[]' ../../$jsonFileName | grep -Pv '^(0x[0-9a-fA
 
 fi
 
-SIZE=$(jq -r '.code | join(" ")' ../../$jsonFileName | wc -w)
+hexSize=$(jq -r '.code | join(" ")' ../../$jsonFileName | wc -w)
 
-if [ $SIZE -le $maxSIZE ]; then
+if [ $hexSize -le $maxSize ]; then
 
-    arrayElements=$(jq -r '.code | join(" ") | split(" ") | join(", ") | "{" + . + "}"' ../../$jsonFileName)
-    sed -i "s/#define HEXCODE\s\+{[^}]*}/#define HEXCODE ${arrayElements}/" ../../${libraryFilePath}
-    sed -i "s/#define SIZE\s\+[0-9]\+/#define SIZE ${SIZE}/" ../../${libraryFilePath}
-    echo "Done."
-    exit 0
+    L_HEXCODE=$(jq -r '.code | join(" ") | split(" ") | join(", ") | "{" + . + "}"' ../../$jsonFileName)
+
+    sed -i "s/#define L_HEXCODE\s\+{[^}]*}/#define L_HEXCODE ${L_HEXCODE}/" ../../${libraryFilePath}
+    sed -i "s/#define L_SIZE\s\+[0-9]\+/#define L_SIZE ${hexSize}/" ../../${libraryFilePath}
+
+    sed -i "s/#define H_HEXCODE\s\+{[^}]*}/#define H_HEXCODE {}/" ../../${libraryFilePath}
+    sed -i "s/#define H_SIZE\s\+[0-9]\+/#define H_SIZE 0/" ../../${libraryFilePath}
+
+else
+
+    L_HEXCODE=$(jq -r '.code | join(" ") | split(" ")[0:'"${maxSize}"'] | join(", ") | "{" + . + "}"' ../../$jsonFileName)
+    H_HEXCODE=$(jq -r '.code | join(" ") | split(" ")['"${maxSize}"':'"${hexSize}"'] | join(", ") | "{" + . + "}"' ../../$jsonFileName)
+
+    sed -i "s/#define L_HEXCODE\s\+{[^}]*}/#define L_HEXCODE ${L_HEXCODE}/" ../../${libraryFilePath}
+    sed -i "s/#define L_SIZE\s\+[0-9]\+/#define L_SIZE ${maxSize}/" ../../${libraryFilePath}
+
+    sed -i "s/#define H_HEXCODE\s\+{[^}]*}/#define H_HEXCODE ${H_HEXCODE}/" ../../${libraryFilePath}
+    sed -i "s/#define H_SIZE\s\+[0-9]\+/#define H_SIZE $((${hexSize} - ${maxSize}))/" ../../${libraryFilePath}
 
 fi
 
-echo "Error: you have exceeded the allowed size!" >&2
-exit 1
+echo "Done."
+exit 0
+

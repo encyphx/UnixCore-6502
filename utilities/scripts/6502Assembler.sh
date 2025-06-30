@@ -1,17 +1,6 @@
 #!/bin/bash
 
-# Example usage: 
-#
-# ./6502Assembler.sh /tmp/UnixCore-6502.s
-
-# Please, ensure that both vasm and jq are installed for the script to operate.
-
-if ! command -v jq > /dev/null || ! command -v vasm > /dev/null; then
-    echo "Error: please, ensure that both vasm and jq are installed for the script to operate." >&2
-    exit 1
-fi
-
-maxSIZE=16384
+romSize=32768
 
 filePrefix="UnixCore-6502"
 
@@ -39,51 +28,66 @@ else
 
 fi
 
-seg8000=$(vasm -Fbin -dotdir "$filePath" -o "$binaryFileName" | awk '/seg8000/ {print $2}')
+vasm=$(vasm -Fbin -dotdir "$filePath" -o "$binaryFileName")
 
-if [ -n "$seg8000" ]; then
+seg8000=$(echo "$vasm" | awk '/seg8000/ {print $2}')
+segfffc=$(echo "$vasm" | awk '/segfffc/ {print $2}')
 
-    hexCode=$(hexdump -v -e '1/1 "0x%02x "' "$binaryFileName" | cut -d ' ' -f1-$seg8000 | xargs -n 17)
+if [ -n "$seg8000" ] && [ $seg8000 -gt 0 ] && [ $seg8000 -le $(($romSize - 6)) ]; then
 
+    hexdump=$(hexdump -v -e '1/1 "0x%02x "' "$binaryFileName")
+    
     rm "$binaryFileName"
 
-    if [ $seg8000 -le $maxSIZE ]; then
+    hexCode=$(echo $hexdump | cut -d ' ' -f1-$seg8000 | xargs -n 17)
 
-        echo "The 'code' array in the file '$jsonFileName' will be cleared."
-        temporaryJsonData=$(jq '.code = []' ../../$jsonFileName)
+    if [ -z "$segfffc" ] || [ $segfffc -lt 2 ]; then
 
-        for ((row = 1; row <= $(echo "$hexCode" | wc -l); row++)); do
+        echo "Error: 'segfffc' field not found or smaller than 2 bytes." >&2
+        exit 1
+    
+    fi
 
-            temporaryJsonData=$(echo "$temporaryJsonData" | jq ".code[$(( $row - 1 ))] = \"$(echo "$hexCode" | sed -n "$row p")\"")
+    fffc=$(echo $hexdump | cut -d ' ' -f$((${romSize} - 3)))
+    fffd=$(echo $hexdump | cut -d ' ' -f$((${romSize} - 2)))
 
-        done
+    if [ "$fffc" != "0x00" ] || [ "$fffd" != "0x80" ]; then
 
-        authorFullName="$(git config --global user.name)"
+        echo 'Error: the program must start at address $8000.' >&2
+        exit 1
+    
+    fi        
 
-        if [ -n "$authorFullName" ]; then
+    echo "The 'code' array in the file '$jsonFileName' will be cleared."
 
-            temporaryJsonData=$(echo "$temporaryJsonData" | jq ".author = \"$authorFullName\"")
+    temporaryJsonData=$(jq '.code = []' ../../$jsonFileName)
 
-        else
+    for ((row = 1; row <= $(echo "$hexCode" | wc -l); row++)); do
 
-            echo "Error: you must set your user name for Git. Use 'git config --global user.name "Name Surname"' to configure it." >&2
-            exit 1
+        temporaryJsonData=$(echo "$temporaryJsonData" | jq --arg hexRow "$(echo "$hexCode" | sed -n "$row p")" '.code['$(( $row - 1 ))'] = $hexRow')
 
-        fi
+    done
 
-        echo "$temporaryJsonData" | jq > ../../$jsonFileName
-        echo "Data successfully stored in the '$jsonFileName' json file!"
+    authorFullName="$(git config --global user.name)"
 
-        exit 0
+    if [ -n "$authorFullName" ]; then
+
+        temporaryJsonData=$(echo "$temporaryJsonData" | jq --arg author "$authorFullName" '.author = $author')
+
+    else
+
+        echo "Error: you must set your user name for Git. Use 'git config --global user.name "Name Surname"' to configure it." >&2
+        exit 1
 
     fi
 
-    echo "Error: you have exceeded the allowed size!" >&2
-    exit 1
+    echo "$temporaryJsonData" | jq > ../../$jsonFileName
+    echo "Data successfully stored in the '$jsonFileName' json file!"
+    exit 0
 
 fi
 
 [ -e "$binaryFileName" ] && rm "$binaryFileName"
 
-echo "Error: no 'seg8000' field found!" >&2
+echo "Error: 'seg8000' field not found, empty (zero bytes) or exceeds the allowed size." >&2
 exit 1
