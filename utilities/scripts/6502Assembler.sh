@@ -70,8 +70,8 @@ if [ -n "$seg8000" ] && [ $seg8000 -gt 0 ] && [ $seg8000 -le $(($romSize - 6)) ]
     fffe=${fffe:-0x00}
     ffff=${ffff:-0x00}
 
-    sed -i "s/#define FFFE\s\+0x[0-9A-Fa-f][0-9A-Fa-f]/#define FFFE ${fffe}/" ../../${libraryFilePath}
-    sed -i "s/#define FFFF\s\+0x[0-9A-Fa-f][0-9A-Fa-f]/#define FFFF ${ffff}/" ../../${libraryFilePath}
+    sed -ri "s/#define FFFE\s+0x[0-9A-Fa-f]{2}/#define FFFE ${fffe}/" ../../${libraryFilePath}
+    sed -ri "s/#define FFFF\s+0x[0-9A-Fa-f]{2}/#define FFFF ${ffff}/" ../../${libraryFilePath}
 
     echo "The 'code' array in the file '$jsonFileName' will be cleared."
 

@@ -16,6 +16,9 @@ void KEYBD_setup() {
   
   pinMode(KEYBD_IRQ, INPUT);
 
+  pinMode(IRQB_ACK, OUTPUT);
+  digitalWrite(IRQB_ACK, LOW);
+
   GPIOC->MODER = GPIOC->MODER & ~0x00000300;
   GPIOC->MODER = GPIOC->MODER & ~0x00000C00;
   GPIOB->MODER = GPIOB->MODER & ~0x00000003;
@@ -24,9 +27,6 @@ void KEYBD_setup() {
   GPIOC->MODER = GPIOC->MODER & ~0x00000030;
   GPIOC->MODER = GPIOC->MODER & ~0x00000003;
   GPIOA->MODER = GPIOA->MODER & ~0x00000003;
-
-  pinMode(IRQB_ACK, OUTPUT);
-  digitalWrite(IRQB_ACK, LOW);
   
   attachInterrupt(digitalPinToInterrupt(KEYBD_IRQ), KEYBD_read, RISING);
 

@@ -7,8 +7,11 @@ void setup() {
 }
 
 void loop() {
+
     digitalWrite(CLK, HIGH);
     delayMicroseconds(T_CLK_HALF);
+    
     digitalWrite(CLK, LOW);
     delayMicroseconds(T_CLK_HALF);
+
 }

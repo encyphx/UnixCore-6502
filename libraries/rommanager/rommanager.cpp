@@ -3,7 +3,6 @@
 byte lowrom[16384] = L_HEXCODE;
 byte highrom[16384] = H_HEXCODE;
 
-// (address >= 0x8000) && (address <= 0xBFFF)
 void LROM_read() {
 
   uint16_t address = 0x8000 + ((GPIOJ->IDR & 0x4000) >> 1) + ((GPIOJ->IDR & 0x8000) >> 3) + ((GPIOK->IDR & 0x0008) << 8) + ((GPIOK->IDR & 0x0010) << 6) + ((GPIOK->IDR & 0x0020) << 4) + ((GPIOK->IDR & 0x0040) << 2) + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
@@ -13,7 +12,6 @@ void LROM_read() {
 
 }
 
-// (address >= 0xC000) && (address <= 0xFFFF)
 void HROM_read() {
 
   uint16_t address = 0xC000 + ((GPIOJ->IDR & 0x4000) >> 1) + ((GPIOJ->IDR & 0x8000) >> 3) + ((GPIOK->IDR & 0x0008) << 8) + ((GPIOK->IDR & 0x0010) << 6) + ((GPIOK->IDR & 0x0020) << 4) + ((GPIOK->IDR & 0x0040) << 2) + (GPIOJ->IDR & 0x0080) + (GPIOE->IDR & 0x0040) + ((GPIOI->IDR & 0x8000) >> 10) + ((GPIOG->IDR & 0x0400) >> 6) + ((GPIOH->IDR & 0x8000) >> 12) + ((GPIOK->IDR & 0x0001) << 2) + ((GPIOI->IDR & 0x0800) >> 10) + ((GPIOK->IDR & 0x0004) >> 2);
@@ -28,7 +26,7 @@ void ROM_setup() {
   pinMode(LROM_RD_IRQ, INPUT);
   pinMode(HROM_RD_IRQ, INPUT);
 
-  if (L_SIZE < 16384) {
+  if (L_SIZE != 16384) {
     memset(&lowrom[L_SIZE], 0x00, sizeof(byte)*(16384-L_SIZE));
   }
 
